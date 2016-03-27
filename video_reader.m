@@ -40,7 +40,9 @@ for i = 1:270
         p3 = wait(h3)
         h4 = impoint(gca,[]);
         p4 = wait(h4)
-        features = [p0; p1; p2; p3; p4];
+        h5 = impoint(gca,[]);
+        p5 = wait(h5)
+        features = [p0; p1; p2; p3; p4; p5];
         initialize(pointTracker, features, videoFrame)
     end
 end
@@ -73,14 +75,20 @@ while  ~isDone(videoReader)
      line1 = [points(2,1:2), points(3,1:2)];
      line2 = [points(3,1:2), points(4,1:2)];     
      line3 = [points(4,1:2), points(5,1:2)];
-     u = points(4,1:2);
-     v = points(5,1:2);
-     CosTheta = dot(u,v)/(norm(u)*norm(v));
+     line4 = [points(5,1:2), points(6,1:2)];
+     l3 = points(3,1:2);
+     o = points(4,1:2);
+     l4 = points(5, 1:2);
+     l4 = l4 - o;
+     l3 = l3 - o;
+     CosTheta = dot(l3,l4)/(norm(l3)*norm(l4));
      ThetaInDegrees = acosd(CosTheta)
      videoFrame = insertShape(videoFrame, 'Line', line0, 'LineWidth', 4, 'Color', 'Red');
      videoFrame = insertShape(videoFrame, 'Line', line1, 'LineWidth', 4, 'Color', 'Yellow');
      videoFrame = insertShape(videoFrame, 'Line', line2, 'LineWidth', 4, 'Color', 'Blue');     
      videoFrame = insertShape(videoFrame, 'Line', line3, 'LineWidth', 4, 'Color', 'Green');
+     videoFrame = insertShape(videoFrame, 'Line', line4, 'LineWidth', 4, 'Color', 'Yellow');
+ 
     % Display output 
      step(videoPlayer, videoFrame);
 %     step(fgPlayer,cleanForeground);
@@ -90,7 +98,6 @@ end
 %% release video reader and writer
 release(videoPlayer);
 release(videoReader);
-release(blob);
 release(shapeInserter);
 % release(fgPlayer);
 delete(videoPlayer); % delete will cause the viewer to close
